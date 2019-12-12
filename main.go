@@ -74,7 +74,7 @@ func buildMessages(users []User) []Message {
 	var messages []Message
 
 	santa := users[0]
-	for len(users) > 0 {
+	for len(users) > 1 {
 		users = users[1:]
 
 		rand.Shuffle(
