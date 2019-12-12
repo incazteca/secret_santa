@@ -24,18 +24,18 @@ type Message struct {
 }
 
 func main() {
-	users, err := FetchUsers(os.Args[1])
+	users, err := fetchUsers(os.Args[1])
 
 	if err != nil {
 		log.Fatalf("Unable to fetch Users: %v", err)
 	}
 
-	messages := BuildMessages(users)
+	messages := buildMessages(users)
 	fmt.Printf("SECRET SANTA: %+v", messages)
 }
 
-//FetchUsers get the users from input csv
-func FetchUsers(fileName string) ([]User, error) {
+//fetchUsers get the users from input csv
+func fetchUsers(fileName string) ([]User, error) {
 	csvFile, err := os.Open(fileName)
 
 	if err != nil {
@@ -55,6 +55,10 @@ func FetchUsers(fileName string) ([]User, error) {
 			return nil, err
 		}
 
+		if record[0] == "name" {
+			continue
+		}
+
 		users = append(users, User{
 			Name:  record[0],
 			Email: record[1],
@@ -64,8 +68,8 @@ func FetchUsers(fileName string) ([]User, error) {
 	return users, nil
 }
 
-// BuildMessages pairs up users and gets messages ready
-func BuildMessages(users []User) []Message {
+// buildMessages pairs up users and gets messages ready
+func buildMessages(users []User) []Message {
 	rand.Seed(time.Now().UnixNano())
 	var messages []Message
 
@@ -82,5 +86,15 @@ func BuildMessages(users []User) []Message {
 		messages = append(messages, Message{SecretSanta: santa, Recipient: recipient})
 		santa = recipient
 	}
+
+	// Close messages into a loop
+	messages = append(
+		messages,
+		Message{
+			SecretSanta: messages[len(messages)-1].Recipient,
+			Recipient:   messages[0].SecretSanta,
+		},
+	)
+
 	return messages
 }
