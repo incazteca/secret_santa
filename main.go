@@ -31,7 +31,7 @@ func main() {
 	}
 
 	messages := buildMessages(users)
-	fmt.Printf("SECRET SANTA: %+v", messages)
+	debugMessages(messages)
 }
 
 //fetchUsers get the users from input csv
@@ -97,4 +97,23 @@ func buildMessages(users []User) []Message {
 	)
 
 	return messages
+}
+
+func sendMessages(messages []Message) error {
+	return nil
+}
+
+func persisteMessages(messages []Message) error {
+	// persist by CSV
+	return nil
+}
+
+func debugMessages(messages []Message) {
+	for _, message := range messages {
+		fmt.Printf(
+			"Secret Santa: %s, Recipient: %s\n",
+			message.SecretSanta,
+			message.Recipient,
+		)
+	}
 }
